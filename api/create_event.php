@@ -13,27 +13,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $schedule = trim($_POST['schedule']);
     $poster = $_FILES['poster'];
 
-    // Handle poster upload
-    $posterFileName = 'default.jpg'; // Default image if no poster is uploaded
-    if (!empty($poster['name'])) {
-        $targetDir = "../assets/img/";
-        $posterFileName = time() . "_" . basename($poster['name']);
-        $targetFilePath = $targetDir . $posterFileName;
+    // Default image (empty if no poster uploaded)
+    $posterBase64 = '';
 
-        if (!move_uploaded_file($poster['tmp_name'], $targetFilePath)) {
-            $_SESSION['error'] = "Failed to upload poster.";
-            header('Location: ../pages/admin/events.php');
-            exit;
-        }
+    // Convert uploaded image to Base64
+    if (!empty($poster['tmp_name'])) {
+        $imageData = file_get_contents($poster['tmp_name']); // Get raw image data
+        $posterBase64 = base64_encode($imageData); // Convert to Base64
     }
 
     try {
-        $stmt = $conn->prepare("INSERT INTO events (title, description, schedule, poster, created_by) VALUES (:title, :description, :schedule, :poster, :created_by)");
+        $stmt = $conn->prepare("INSERT INTO events (title, description, schedule, poster_base64, created_by) 
+                                VALUES (:title, :description, :schedule, :poster_base64, :created_by)");
         $stmt->execute([
             ':title' => $title,
             ':description' => $description,
             ':schedule' => $schedule,
-            ':poster' => $posterFileName,
+            ':poster_base64' => $posterBase64, // Save Base64 string
             ':created_by' => $_SESSION['user_id']
         ]);
 

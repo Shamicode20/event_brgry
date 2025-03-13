@@ -208,39 +208,51 @@ body.dark-mode .btn-danger {
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">Create</button>
     </div>
     <div class="row">
-    <?php if (!empty($items)) : ?>
-        <?php foreach ($items as $item) : ?>
-            <div class="col-md-4 col-sm-6 col-xs-12 mb-4">
-                <div class="card">
-                    <img src="../../assets/img/<?php echo htmlspecialchars($item['image'] ?? 'default.jpg'); ?>" 
-                         alt="<?php echo htmlspecialchars($item['name']); ?>" 
+    <?php if (!empty($events)) : ?>
+    <?php foreach ($events as $event) : ?>
+        <div class="col-md-4 col-sm-6 col-xs-12 mb-4">
+            <div class="card">
+                <?php if (!empty($event['poster_base64'])) : ?>
+                    <img src="data:image/jpeg;base64,<?php echo htmlspecialchars($event['poster_base64']); ?>" 
+                         alt="<?php echo htmlspecialchars($event['title']); ?>" 
                          class="card-img-top">
-                    <div class="card-body text-center">
-                        <h5 class="card-title"><?php echo htmlspecialchars($item['name']); ?></h5>
-                        <p class="card-text">Available: <strong><?php echo $item['quantity']; ?></strong></p>
+                <?php else : ?>
+                    <img src="../../assets/images/default.jpg" 
+                         alt="Default Image" 
+                         class="card-img-top">
+                <?php endif; ?>
+                <div class="card-body text-center">
+                    <h5 class="card-title"><?php echo htmlspecialchars($event['title']); ?></h5>
+                    <p class="card-text"><?php echo htmlspecialchars($event['description']); ?></p>
+                    <p class="card-text"><strong>Schedule:</strong> <?php echo date("F d, Y h:i A", strtotime($event['schedule'])); ?></p>
 
-                        <!-- Input for request quantity -->
-                        <div class="d-flex justify-content-center">
-                            <input type="number" class="form-control w-50 text-center item-quantity" 
-                                   min="1" max="<?php echo $item['quantity']; ?>" 
-                                   placeholder="Enter quantity">
-                        </div>
+                    <!-- Buttons -->
+                    <button class="btn btn-warning btn-sm" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#editModal"
+                            data-id="<?php echo $event['id']; ?>"
+                            data-title="<?php echo htmlspecialchars($event['title']); ?>"
+                            data-description="<?php echo htmlspecialchars($event['description']); ?>"
+                            data-schedule="<?php echo $event['schedule']; ?>">
+                        Edit
+                    </button>
 
-                        <!-- Request Button -->
-                        <button class="btn btn-primary btn-sm mt-2 request-item-btn"
-                                data-id="<?php echo $item['id']; ?>"
-                                data-name="<?php echo htmlspecialchars($item['name']); ?>"
-                                data-max="<?php echo $item['quantity']; ?>">
-                            Request
-                        </button>
-                    </div>
+                    <button class="btn btn-danger btn-sm" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#deleteModal"
+                            data-id="<?php echo $event['id']; ?>">
+                        Delete
+                    </button>
                 </div>
             </div>
-        <?php endforeach; ?>
-    <?php else : ?>
-        <p class="text-center w-100">No available items at the moment.</p>
-    <?php endif; ?>
+        </div>
+    <?php endforeach; ?>
+<?php else : ?>
+    <p class="text-center w-100">No events available at the moment.</p>
+<?php endif; ?>
+
 </div>
+
 
 <script>
 $(document).ready(function() {

@@ -39,9 +39,18 @@
 
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
-              <a class="nav-link" href="events.php">
+              <a class="nav-link" href="event_dashboard.php">
               <i class="fa-solid fa-wrench"></i>
                 <span class="ml-3 item-text">Event</span>
+              </a>
+            </li>
+          </ul>
+          
+          <ul class="navbar-nav flex-fill w-100 mb-2">
+            <li class="nav-item w-100">
+              <a class="nav-link" href="event_registration.php">
+              <i class="fa-solid fa-wrench"></i>
+                <span class="ml-3 item-text">Event Registration</span>
               </a>
             </li>
           </ul>
@@ -86,14 +95,12 @@
 
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
-              <a class="nav-link" href="admin_requests.php">
+              <a class="nav-link" href="settings.php">
               <i class="fa-solid fa-screwdriver-wrench"></i>
-                <span class="ml-3 item-text">View Requests</span>
+                <span class="ml-3 item-text">Settings</span>
               </a>
             </li>
           </ul>
-      
-
   
       
         </nav>
