@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 $conn = new mysqli("localhost", "root", "", "bara_event_app");
 
@@ -26,10 +27,10 @@ $items = isset($_POST['items']) ? $_POST['items'] : [];
 $quantities = isset($_POST['quantity']) ? $_POST['quantity'] : [];
 
 $itemData = [];
-foreach ($items as $item) {
-    $qty = isset($quantities[$item]) ? intval($quantities[$item]) : 1;
+foreach ($items as $itemId) {
+    $qty = isset($quantities[$itemId]) ? intval($quantities[$itemId]) : 1;
     if ($qty > 0) {
-        $itemData[$item] = $qty;
+        $itemData[$itemId] = $qty;
     }
 }
 
@@ -38,17 +39,17 @@ $items_json = json_encode(array_keys($itemData));
 $quantities_json = json_encode(array_values($itemData));
 
 // Insert request into the requests table
-$sql = "INSERT INTO requests (full_name, contact_number, items, quantities, delivery_datetime, location, event_purpose, other_event) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+$sql = "INSERT INTO requests (full_name, contact_number, items, quantities, delivery_datetime, location, event_purpose, other_event, status) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ssssssss", $full_name, $contact_number, $items_json, $quantities_json, $delivery_datetime, $location, $event_purpose, $other_event);
 
 if ($stmt->execute()) {
     // Reduce stock in inventory
-    foreach ($itemData as $itemName => $requestedQty) {
+    foreach ($itemData as $itemId => $requestedQty) {
         // Get the current stock of the item
-        $query = $conn->prepare("SELECT quantity FROM inventory WHERE name = ?");
-        $query->bind_param("s", $itemName);
+        $query = $conn->prepare("SELECT quantity FROM inventory WHERE id = ?");
+        $query->bind_param("i", $itemId);
         $query->execute();
         $query->bind_result($currentQty);
         $query->fetch();
@@ -59,12 +60,12 @@ if ($stmt->execute()) {
             $newQty = $currentQty - $requestedQty;
 
             // Update inventory
-            $update = $conn->prepare("UPDATE inventory SET quantity = ? WHERE name = ?");
-            $update->bind_param("is", $newQty, $itemName);
+            $update = $conn->prepare("UPDATE inventory SET quantity = ? WHERE id = ?");
+            $update->bind_param("ii", $newQty, $itemId);
             $update->execute();
             $update->close();
         } else {
-            $_SESSION['error'] = "Not enough stock for item: " . htmlspecialchars($itemName);
+            $_SESSION['error'] = "Not enough stock for item ID: " . htmlspecialchars($itemId);
             header("Location: logistic.php");
             exit();
         }
@@ -82,3 +83,5 @@ $conn->close();
 // Redirect back to the main page
 header("Location: logistic.php");
 exit();
+
+?>

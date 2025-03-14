@@ -196,41 +196,94 @@
 </head>
 <body>
 
-    <h1><center>Contact Us</center></h1>
+    
 
     
     <style>
-        
-        .container {
-    max-width: 600px;
-    margin: 50px auto;
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    border: 3px solid black;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+ 
+ .container {
+     max-width: 500px;
+     background: #fff;
+     padding: 30px;
+     border-radius: 12px;
+     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+     border-top: 5px solid #007BFF;
+     text-align: center;
+     transition: transform 0.3s ease, box-shadow 0.3s ease;
+ }
 
-.container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
+ .container:hover {
+     transform: translateY(-5px);
+     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+ }
 
-    </style>
+ h1 {
+     font-size: 28px;
+     color: #333;
+     margin-bottom: 15px;
+ }
+
+ p {
+     font-size: 16px;
+     color: #555;
+     margin-bottom: 20px;
+     line-height: 1.5;
+ }
+
+ h4 {
+     font-size: 18px;
+     margin-bottom: 10px;
+     color: #007BFF;
+ }
+
+ .contact-info {
+     font-size: 16px;
+     color: #333;
+     font-weight: bold;
+ }
+
+ .social-icons {
+     margin-top: 20px;
+ }
+
+ .social-icons a {
+     text-decoration: none;
+     color: white;
+     background: #007BFF;
+     padding: 10px;
+     border-radius: 50%;
+     margin: 5px;
+     display: inline-block;
+     transition: background 0.3s ease;
+ }
+
+ .social-icons a:hover {
+     background: #0056b3;
+ }
+
+ .social-icons i {
+     font-size: 18px;
+ }
+
+</style>
 </head>
 <body>
 
-    <div class="container">
+<div class="container">
+        <h1>Contact Us</h1>
+        <p>If you have any questions or concerns, feel free to reach out to us.</p>
+        
+        <h4>📞 Baranggay Event Contact Number:</h4>
+        <p class="contact-info">0900-9090</p>
 
-        <p>Please feel free to contact us with any questions or concerns you may have
-           </strong></p>
-           <h4>Baranggay Event Contact Number: <strong>09009090</strong></h4>
-           <h4>Email:baranggayevent@gmail.com</h4>
+        <h4>📧 Email:</h4>
+        <p class="contact-info">baranggayevent@gmail.com</p>
 
-
-
-           
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
     </div>
 
 <!-- Include jQuery -->

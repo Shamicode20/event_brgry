@@ -23,10 +23,10 @@
 
           <!--Sidebar ito-->
 
-          <ul class="navbar-nav active flex-fill w-100 mb-2">
+          <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item dropdown">
               <a class="nav-link" href="home.php">
-              <i class="fas fa-chart-line"></i>
+              <i class="fa-solid fa-house"></i>
                 <span class="ml-3 item-text">Home</span>
 
               </a>
@@ -40,18 +40,20 @@
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
               <a class="nav-link" href="events.php">
-              <i class="fa-solid fa-wrench"></i>
+              <i class="fa-solid fa-calendar"></i>
                 <span class="ml-3 item-text">Event</span>
               </a>
             </li>
           </ul>
+
+      
 
           
 
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
             <a class="nav-link" href="contact.php">
-            <i class="fa-solid fa-wrench"></i>
+            <i class="fa-solid fa-phone"></i>
                 <span class="ml-3 item-text">Contact Us</span>
               </a>
             </li>
@@ -65,7 +67,7 @@
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
               <a class="nav-link" href="logistic.php">
-              <i class="fa-solid fa-wrench"></i>
+              <i class="fa-solid fa-truck"></i>
                 <span class="ml-3 item-text">Logistic</span>
               </a>
             </li>
@@ -74,20 +76,29 @@
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
             <a class="nav-link" href="emergency.php">
-            <i class="fa-solid fa-wrench"></i>
+            <i class="fa-solid fa-notes-medical"></i>
                 <span class="ml-3 item-text">Emergency Hotline</span>
               </a>
             </li>
           </ul>
+              </a>
+            </li>
+          </ul>
 
-          <p class="text-muted-nav nav-heading mt-4 mb-1">
-          <span style="font-size: 10.5px; font-weight: bold; font-family: 'Inter', sans-serif;">SETTINGS</span>
-          </p>
+          <ul class="navbar-nav flex-fill w-100 mb-2">
+            <li class="nav-item w-100">
+              <a class="nav-link" href="archived_events.php">
+              <i class="fa-solid fa-box-archive"></i>
+                <span class="ml-3 item-text">Archived Events</span>
+              </a>
+            </li>
+          </ul>
+
 
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
               <a class="nav-link" href="admin_requests.php">
-              <i class="fa-solid fa-screwdriver-wrench"></i>
+              <i class="fa-regular fa-eye"></i>
                 <span class="ml-3 item-text">View Requests</span>
               </a>
             </li>

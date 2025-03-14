@@ -174,10 +174,10 @@
 
           <!--Sidebar ito-->
 
-          <ul class="navbar-nav active flex-fill w-100 mb-2">
+          <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item dropdown">
               <a class="nav-link" href="home.php">
-              <i class="fas fa-chart-line"></i>
+              <i class="fa-solid fa-house"></i>
                 <span class="ml-3 item-text">Home</span>
 
               </a>
@@ -191,8 +191,8 @@
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
               <a class="nav-link" href="event_dashboard.php">
-              <i class="fa-solid fa-wrench"></i>
-                <span class="ml-3 item-text">Event </span>
+              <i class="fa-solid fa-calendar"></i>
+                <span class="ml-3 item-text">Event</span>
               </a>
             </li>
           </ul>
@@ -200,7 +200,7 @@
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
               <a class="nav-link" href="event_registration.php">
-              <i class="fa-solid fa-wrench"></i>
+              <i class="fa-solid fa-registered"></i>
                 <span class="ml-3 item-text">Event Registration</span>
               </a>
             </li>
@@ -211,7 +211,7 @@
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
             <a class="nav-link" href="contact.php">
-            <i class="fa-solid fa-wrench"></i>
+            <i class="fa-solid fa-phone"></i>
                 <span class="ml-3 item-text">Contact Us</span>
               </a>
             </li>
@@ -225,7 +225,7 @@
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
               <a class="nav-link" href="logistic.php">
-              <i class="fa-solid fa-wrench"></i>
+              <i class="fa-solid fa-truck"></i>
                 <span class="ml-3 item-text">Logistic</span>
               </a>
             </li>
@@ -234,26 +234,21 @@
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
             <a class="nav-link" href="emergency.php">
-            <i class="fa-solid fa-wrench"></i>
+            <i class="fa-solid fa-notes-medical"></i>
                 <span class="ml-3 item-text">Emergency Hotline</span>
               </a>
             </li>
           </ul>
-       
-      
-       
-          <p class="text-muted-nav nav-heading mt-4 mb-1">
-          <span style="font-size: 10.5px; font-weight: bold; font-family: 'Inter', sans-serif;">SETTINGS</span>
-          </p>
-
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
-              <a class="nav-link" href="settings.php">
-              <i class="fa-solid fa-screwdriver-wrench"></i>
-                <span class="ml-3 item-text">Settings</span>
+            <a class="nav-link" href="processed_requests.php">
+            <i class="fa-solid fa-notes-medical"></i>
+                <span class="ml-3 item-text">Request Status</span>
               </a>
             </li>
           </ul>
+
+          
   
       
         </nav>
@@ -298,45 +293,88 @@
           </div>
         </div>
 
-        <h1><center>Emergency Hotline</center></h1>
 
     
-<style>
-    
-    .container {
-max-width: 600px;
-margin: 50px auto;
-background: white;
-padding: 25px;
-border-radius: 12px;
-box-shadow: 10px 4px 15px rgba(0, 0, 0, 0.2);
-border: 3px solid black;
-transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+        <style>
+        /* Ensures this only applies to the emergency section */
+        .emergency-container {
+            max-width: 500px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            border-left: 5px solid #d9534f;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin: 50px auto; /* Center without affecting sidebar */
+        }
 
-.container:hover {
-transform: translateY(-5px);
-box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
+        .emergency-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
 
-</style>
+        h1 {
+            text-align: center;
+            color: #d9534f;
+            font-size: 32px;
+        }
+
+       
+
+        h5 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .icon {
+            color: #d9534f;
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        .contact-info {
+            font-size: 16px;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
+    <h1>🚨 Emergency Hotline 🚨</h1>
 
-    <p>Please feel free to contact us with any questions or concerns you may have
-       </strong></p>
-       <h5>Emergency Hotline: <strong>911</strong></h5>
-       <h5>BFP National Capital Region (NCR): <strong><br>  * (632) 410-5264<br>
-       * (632) 410-6319</strong></h5>
-       <h5>Police Department: <strong><br>(02) 722-0650 <br> +63917-847-5757</strong></h5>
-       <h5>Medical Emergency: <strong>*Philippine Red Cross:* 143</strong></h5>
-       <h5>Operating Hours: <strong>5AM - 5PM</strong></h5>
+    <div class="emergency-container">
+        <p>If you have an emergency, please contact the appropriate department immediately.</p>
+        
+        <h5><i class="fas fa-phone icon"></i>Emergency Hotline: <span class="contact-info">911</span></h5>
+        <h5><i class="fas fa-fire-extinguisher icon"></i>BFP NCR:</h5>
+        <p class="contact-info">📞 (632) 410-5264 <br> 📞 (632) 410-6319</p>
+
+        <h5><i class="fas fa-shield-alt icon"></i>Police Department:</h5>
+        <p class="contact-info">📞 (02) 722-0650 <br> 📱 +63917-847-5757</p>
+
+        <h5><i class="fas fa-briefcase-medical icon"></i>Medical Emergency (Red Cross):</h5>
+        <p class="contact-info">📞 143</p>
+
+        <h5><i class="fas fa-clock icon"></i>Operating Hours:</h5>
+        <p class="contact-info">⏰ 5AM - 5PM</p>
+    </div>
 
 
-       
-</div>
+    <p class="footer">Stay safe! Save these numbers for quick access in emergencies. 🚑🚔🔥</p>
+
+</body>
+
 
 <!-- Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

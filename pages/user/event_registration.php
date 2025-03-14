@@ -43,50 +43,54 @@ $currentEvents = [];
 $recentEvents = [];
 
 try {
-    // Fetch upcoming events that the user is not registered for
-    $stmt = $conn->prepare("
-        SELECT events.id, events.title, events.description, events.schedule, events.poster 
-        FROM events 
-        WHERE events.schedule > NOW()
-        AND events.id NOT IN (
-            SELECT event_id 
-            FROM event_participants 
-            WHERE user_id = :id
-        )
-        ORDER BY events.schedule ASC
-    ");
-    $stmt->execute([':id' => $_SESSION['user_id']]);
-    $upcomingEvents = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  // Fetch upcoming events that the user is not registered for
+  $stmt = $conn->prepare("
+      SELECT events.id, events.title, events.description, events.schedule, 
+             COALESCE(events.poster_base64, 'default.jpg') AS poster_base64
+      FROM events 
+      WHERE events.schedule > NOW()
+      AND events.id NOT IN (
+          SELECT event_id 
+          FROM event_participants 
+          WHERE user_id = :id
+      )
+      ORDER BY events.schedule ASC
+  ");
+  $stmt->execute([':id' => $_SESSION['user_id']]);
+  $upcomingEvents = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Fetch current events (ongoing or happening today) that the user is not registered for
-    $stmt = $conn->prepare("
-        SELECT events.id, events.title, events.description, events.schedule, events.poster 
-        FROM events 
-        WHERE DATE(events.schedule) = CURDATE()
-        AND events.id NOT IN (
-            SELECT event_id 
-            FROM event_participants 
-            WHERE user_id = :id
-        )
-        ORDER BY events.schedule ASC
-    ");
-    $stmt->execute([':id' => $_SESSION['user_id']]);
-    $currentEvents = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  // Fetch current events (ongoing or happening today)
+  $stmt = $conn->prepare("
+      SELECT events.id, events.title, events.description, events.schedule, 
+             COALESCE(events.poster_base64, 'default.jpg') AS poster_base64
+      FROM events 
+      WHERE DATE(events.schedule) = CURDATE()
+      AND events.id NOT IN (
+          SELECT event_id 
+          FROM event_participants 
+          WHERE user_id = :id
+      )
+      ORDER BY events.schedule ASC
+  ");
+  $stmt->execute([':id' => $_SESSION['user_id']]);
+  $currentEvents = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Fetch recent events the user has registered for
-    $stmt = $conn->prepare("
-        SELECT events.id, events.title, events.schedule, events.poster 
-        FROM events 
-        JOIN event_participants ON events.id = event_participants.event_id 
-        WHERE event_participants.user_id = :id
-        ORDER BY events.schedule DESC
-        LIMIT 5
-    ");
-    $stmt->execute([':id' => $_SESSION['user_id']]);
-    $recentEvents = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  // Fetch recent events the user has registered for
+  $stmt = $conn->prepare("
+      SELECT events.id, events.title, events.schedule, 
+             COALESCE(events.poster_base64, 'default.jpg') AS poster_base64
+      FROM events 
+      JOIN event_participants ON events.id = event_participants.event_id 
+      WHERE event_participants.user_id = :id
+      ORDER BY events.schedule DESC
+      LIMIT 5
+  ");
+  $stmt->execute([':id' => $_SESSION['user_id']]);
+  $recentEvents = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
-    $_SESSION['error'] = "Error fetching events: " . $e->getMessage();
+  $_SESSION['error'] = "Error fetching events: " . $e->getMessage();
 }
+
 
 ?>
 <!DOCTYPE html>
@@ -265,10 +269,10 @@ try {
 
           <!--Sidebar ito-->
 
-          <ul class="navbar-nav active flex-fill w-100 mb-2">
+          <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item dropdown">
               <a class="nav-link" href="home.php">
-              <i class="fas fa-chart-line"></i>
+              <i class="fa-solid fa-house"></i>
                 <span class="ml-3 item-text">Home</span>
 
               </a>
@@ -282,7 +286,7 @@ try {
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
               <a class="nav-link" href="event_dashboard.php">
-              <i class="fa-solid fa-wrench"></i>
+              <i class="fa-solid fa-calendar"></i>
                 <span class="ml-3 item-text">Event</span>
               </a>
             </li>
@@ -291,7 +295,7 @@ try {
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
               <a class="nav-link" href="event_registration.php">
-              <i class="fa-solid fa-wrench"></i>
+              <i class="fa-solid fa-registered"></i>
                 <span class="ml-3 item-text">Event Registration</span>
               </a>
             </li>
@@ -302,7 +306,7 @@ try {
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
             <a class="nav-link" href="contact.php">
-            <i class="fa-solid fa-wrench"></i>
+            <i class="fa-solid fa-phone"></i>
                 <span class="ml-3 item-text">Contact Us</span>
               </a>
             </li>
@@ -316,7 +320,7 @@ try {
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
               <a class="nav-link" href="logistic.php">
-              <i class="fa-solid fa-wrench"></i>
+              <i class="fa-solid fa-truck"></i>
                 <span class="ml-3 item-text">Logistic</span>
               </a>
             </li>
@@ -325,24 +329,21 @@ try {
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
             <a class="nav-link" href="emergency.php">
-            <i class="fa-solid fa-wrench"></i>
+            <i class="fa-solid fa-notes-medical"></i>
                 <span class="ml-3 item-text">Emergency Hotline</span>
               </a>
             </li>
           </ul>
-
-          <p class="text-muted-nav nav-heading mt-4 mb-1">
-          <span style="font-size: 10.5px; font-weight: bold; font-family: 'Inter', sans-serif;">SETTINGS</span>
-          </p>
-
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
-              <a class="nav-link" href="settings.php">
-              <i class="fa-solid fa-screwdriver-wrench"></i>
-                <span class="ml-3 item-text">Settings</span>
+            <a class="nav-link" href="processed_requests.php">
+            <i class="fa-solid fa-notes-medical"></i>
+                <span class="ml-3 item-text">Request Status</span>
               </a>
             </li>
           </ul>
+
+        
   
       
         </nav>
@@ -418,10 +419,11 @@ try {
                     <?php foreach ($currentEvents as $event): ?>
                         <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
                             <div class="card border-0 shadow-sm h-100 dark-card">
-                                <img src="../../assets/img/<?php echo htmlspecialchars($event['poster'] ?? 'default.jpg'); ?>"
-                                    alt="<?php echo htmlspecialchars($event['title']); ?>"
-                                    class="card-img-top rounded-top"
-                                    style="height: auto; width: 100%; object-fit: contain; background-color: #f8f9fa;">
+                            <img
+    src="data:image/jpeg;base64,<?php echo htmlspecialchars($event['poster_base64']); ?>"
+    alt="<?php echo htmlspecialchars($event['title']); ?>"
+    class="card-img-top rounded-top"
+    style="height: 250px; object-fit: contain; background-color: #f8f9fa;">
                                 <div class="card-body d-flex flex-column dark-card-body">
                                     <h5 class="card-title text-center dark-text"><?php echo htmlspecialchars($event['title']); ?></h5>
                                     <p class="text-muted small text-center dark-text"><?php echo htmlspecialchars($event['description']); ?></p>
@@ -450,10 +452,11 @@ try {
                     <?php foreach ($upcomingEvents as $event): ?>
                         <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
                             <div class="card border-0 shadow-sm h-100 dark-card">
-                                <img src="../../assets/img/<?php echo htmlspecialchars($event['poster'] ?? 'default.jpg'); ?>"
-                                    alt="<?php echo htmlspecialchars($event['title']); ?>"
-                                    class="card-img-top rounded-top"
-                                    style="height: auto; width: 100%; object-fit: contain; background-color: #f8f9fa;">
+                            <img
+    src="data:image/jpeg;base64,<?php echo htmlspecialchars($event['poster_base64']); ?>"
+    alt="<?php echo htmlspecialchars($event['title']); ?>"
+    class="card-img-top rounded-top"
+    style="height: 250px; object-fit: contain; background-color: #f8f9fa;">
                                 <div class="card-body d-flex flex-column dark-card-body">
                                     <h5 class="card-title text-center dark-text"><?php echo htmlspecialchars($event['title']); ?></h5>
                                     <p class="text-muted small text-center dark-text"><?php echo htmlspecialchars($event['description']); ?></p>
@@ -482,10 +485,11 @@ try {
                     <?php foreach ($recentEvents as $event): ?>
                         <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
                             <div class="card border-0 shadow-sm h-100 dark-card">
-                                <img src="../../assets/img/<?php echo htmlspecialchars($event['poster'] ?? 'default.jpg'); ?>"
-                                    alt="<?php echo htmlspecialchars($event['title']); ?>"
-                                    class="card-img-top rounded-top"
-                                    style="height: auto; width: 100%; object-fit: contain; background-color: #f8f9fa;">
+                            <img
+    src="data:image/jpeg;base64,<?php echo htmlspecialchars($event['poster_base64']); ?>"
+    alt="<?php echo htmlspecialchars($event['title']); ?>"
+    class="card-img-top rounded-top"
+    style="height: 250px; object-fit: contain; background-color: #f8f9fa;">
                                 <div class="card-body text-center dark-card-body">
                                     <h5 class="card-title dark-text"><?php echo htmlspecialchars($event['title']); ?></h5>
                                     <p class="text-muted small dark-text">Schedule: <?php echo date('F j, Y, g:i A', strtotime($event['schedule'])); ?></p>

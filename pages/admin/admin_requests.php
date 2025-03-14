@@ -1,4 +1,5 @@
 <?php
+session_start();
 require '../../database/connection.php';
 
 // Fetch all requests
@@ -11,6 +12,7 @@ try {
     $_SESSION['error'] = "Error fetching requests: " . $e->getMessage();
 }
 ?>
+
  <?php include('navbar.php')?>
       <?php include('sidebar.php')?>
       <main role="main" class="main-content">
@@ -166,60 +168,101 @@ try {
     <div class="wrapper">
     
 
-<div class="container mt-4">
-    <h2>Submitted Requests</h2>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Full Name</th>
-                <th>Contact</th>
-                <th>Items</th>
-                <th>Delivery Date</th>
-                <th>Location</th>
-                <th>Purpose</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($requests as $request) : ?>
+    <div class="container mt-4">
+        <h2>Submitted Requests</h2>
+        <table class="table table-bordered">
+            <thead>
                 <tr>
-                    <td><?php echo $request['id']; ?></td>
-                    <td><?php echo htmlspecialchars($request['full_name']); ?></td>
-                    <td><?php echo htmlspecialchars($request['contact_number']); ?></td>
-                    <td><?php echo htmlspecialchars($request['items']); ?></td>
-                    <td><?php echo htmlspecialchars($request['delivery_datetime']); ?></td>
-                    <td><?php echo htmlspecialchars($request['location']); ?></td>
-                    <td><?php echo htmlspecialchars($request['event_purpose']); ?></td>
-                    <td>
-                        <span class="badge bg-<?php echo ($request['status'] == 'Approved') ? 'success' : (($request['status'] == 'Rejected') ? 'danger' : 'warning'); ?>">
-                            <?php echo $request['status']; ?>
-                        </span>
-                    </td>
-                    <td>
-                        <?php if ($request['status'] == 'Pending') : ?>
-                            <form action="update_request_status.php" method="POST" class="d-inline">
-                                <input type="hidden" name="request_id" value="<?php echo $request['id']; ?>">
-                                <button type="submit" name="approve" class="btn btn-success btn-sm">Approve</button>
-                                <button type="submit" name="reject" class="btn btn-danger btn-sm">Reject</button>
-                            </form>
-                        <?php else : ?>
-                            <span class="text-muted">Processed</span>
-                        <?php endif; ?>
-                    </td>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Contact</th>
+                    <th>Items</th>
+                    <th>Delivery Date</th>
+                    <th>Location</th>
+                    <th>Purpose</th>
+                    <th>Status</th>
+                    <th>Action</th>
                 </tr>
-            <?php endforeach; ?>
-        </tbody>
+            </thead>
+            <tbody>
+                <?php foreach ($requests as $request) : ?>
+                    <tr id="row-<?php echo $request['id']; ?>">
+                        <td><?php echo $request['id']; ?></td>
+                        <td><?php echo htmlspecialchars($request['full_name']); ?></td>
+                        <td><?php echo htmlspecialchars($request['contact_number']); ?></td>
+                        <td><?php echo htmlspecialchars($request['items']); ?></td>
+                        <td><?php echo htmlspecialchars($request['delivery_datetime']); ?></td>
+                        <td><?php echo htmlspecialchars($request['location']); ?></td>
+                        <td><?php echo htmlspecialchars($request['event_purpose']); ?></td>
+                        <td>
+                            <?php
+                            $statusClass = "warning"; // Default yellow for Pending
+                            if ($request['status'] == 'Approved') {
+                                $statusClass = "success";
+                            } elseif ($request['status'] == 'Rejected') {
+                                $statusClass = "danger";
+                            }
+                            ?>
+                            <span class="badge bg-<?php echo $statusClass; ?>">
+                                <?php echo htmlspecialchars($request['status']); ?>
+                            </span>
+                        </td>
+                        <td>
+                            <?php if ($request['status'] == 'Pending') : ?>
+                                <form action="update_request_status.php" method="POST" class="d-inline">
+                                    <input type="hidden" name="request_id" value="<?php echo $request['id']; ?>">
+                                    <button type="submit" name="approve" class="btn btn-success btn-sm">Approve</button>
+                                    <button type="submit" name="reject" class="btn btn-danger btn-sm">Reject</button>
+                                </form>
+                            <?php else : ?>
+                                <button class="btn btn-danger btn-sm delete-request" data-id="<?php echo $request['id']; ?>">Delete</button>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+</tbody>
+
+
     </table>
 </div>
 
 <!-- Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <?php include('script.php')?>
-  <script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>
-<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<?php include('script.php'); ?>
 
 <script>
+    $(document).ready(function() {
+    $(".delete-request").on("click", function() {
+        var requestId = $(this).data("id");
+
+        if (confirm("Are you sure you want to delete this request?")) {
+            $.ajax({
+                url: "delete_request.php",
+                type: "POST",
+                data: { id: requestId },
+                dataType: "text", // Ensure correct response type
+                success: function(response) {
+                    console.log("Server response:", response);
+                    if (response.trim() === "success") {
+                        $("#row-" + requestId).fadeOut("slow", function() {
+                            $(this).remove(); // Remove the row from the table
+                        });
+                    } else {
+                        alert("Failed to delete the request.");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log("AJAX Error:", error);
+                    alert("An error occurred while deleting the request.");
+                }
+            });
+        }
+    });
+});
+
+</script>

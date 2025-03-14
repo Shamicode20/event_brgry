@@ -10,8 +10,7 @@ define('BASE_PATH', dirname(__DIR__, 2));
 require_once BASE_PATH . '/database/connection.php';
 
 
-// Fetch events dynamically from the database
-// database/connection.php
+// Fetch events dynamically
 try {
     $stmt = $conn->prepare("SELECT * FROM events ORDER BY schedule DESC");
     $stmt->execute();
@@ -21,8 +20,12 @@ try {
     $events = [];
 }
 
-
+// Display success or error messages
+$successMessage = isset($_SESSION['success']) ? $_SESSION['success'] : null;
+$errorMessage = isset($_SESSION['error']) ? $_SESSION['error'] : null;
+unset($_SESSION['success'], $_SESSION['error']); // Clear messages after displaying
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -45,6 +48,12 @@ try {
     <!-- App CSS -->
     <link rel="stylesheet" href="../../css/main.css">   
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<!-- FullCalendar CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css" rel="stylesheet">
+
+<!-- FullCalendar JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 
     <style>
@@ -153,7 +162,8 @@ body.dark-mode .btn-danger {
   
   </head>
 
-    
+  <div id="calendar"></div>
+
     
  
   <body class="vertical  light">
@@ -208,14 +218,36 @@ body.dark-mode .btn-danger {
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">Create</button>
     </div>
     <div class="row">
+        <!-- Notification Messages (Placed at the Top) -->
+<div class="container mt-3">
+    <?php if ($successMessage) : ?>
+        <div class="alert alert-success alert-dismissible fade show text-center fw-bold" role="alert">
+            <?php echo htmlspecialchars($successMessage); ?>
+          
+        </div>
+    <?php endif; ?>
+
+    <?php if ($errorMessage) : ?>
+        <div class="alert alert-danger alert-dismissible fade show text-center fw-bold" role="alert">
+            <?php echo htmlspecialchars($errorMessage); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+</div>
+
+<!-- Rest of your events.php content -->
+<div class="container">
+   
+    <!-- Event listing and other content here -->
+</div>
     <?php if (!empty($events)) : ?>
     <?php foreach ($events as $event) : ?>
         <div class="col-md-4 col-sm-6 col-xs-12 mb-4">
             <div class="card">
                 <?php if (!empty($event['poster_base64'])) : ?>
-                    <img src="data:image/jpeg;base64,<?php echo htmlspecialchars($event['poster_base64']); ?>" 
-                         alt="<?php echo htmlspecialchars($event['title']); ?>" 
-                         class="card-img-top">
+                    <img src="data:image/jpeg;base64,<?php echo htmlspecialchars_decode($event['poster_base64']); ?>" class="card-img-top">
+
+                         
                 <?php else : ?>
                     <img src="../../assets/images/default.jpg" 
                          alt="Default Image" 
@@ -252,6 +284,7 @@ body.dark-mode .btn-danger {
 <?php endif; ?>
 
 </div>
+
 
 
 <script>
@@ -305,6 +338,19 @@ $(document).ready(function() {
                         <input type="file" class="form-control" id="poster" name="poster">
                     </div>
                 </div>
+                <div class="mb-3">
+    <label for="location" class="form-label">Location</label>
+    <input type="text" class="form-control" id="location" name="location" required>
+</div>
+<div class="mb-3">
+    <label for="organizer_name" class="form-label">Organizer Name</label>
+    <input type="text" class="form-control" id="organizer_name" name="organizer_name" required>
+</div>
+<div class="mb-3">
+    <label for="organizer_contact" class="form-label">Organizer Contact</label>
+    <input type="text" class="form-control" id="organizer_contact" name="organizer_contact" required>
+</div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Create Event</button>
@@ -316,37 +362,51 @@ $(document).ready(function() {
 
 <!-- Edit Event Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog">
         <div class="modal-content">
-            <form action="../../api/edit_event.php" method="POST" enctype="multipart/form-data">
-                <input type="hidden" id="editEventId" name="id">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Edit Event</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Event</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <form action="../../api/edit_event.php" method="POST">
+                <form id="editEventForm" enctype="multipart/form-data">
+                    <input type="hidden" id="editEventId" name="event_id">
+                    
                     <div class="mb-3">
-                        <label for="editTitle" class="form-label">Title</label>
+                        <label for="editTitle" class="form-label">Event Title</label>
                         <input type="text" class="form-control" id="editTitle" name="title" required>
                     </div>
+
                     <div class="mb-3">
                         <label for="editDescription" class="form-label">Description</label>
-                        <textarea class="form-control" id="editDescription" name="description" rows="3" required></textarea>
+                        <textarea class="form-control" id="editDescription" name="description" required></textarea>
                     </div>
+
                     <div class="mb-3">
                         <label for="editSchedule" class="form-label">Schedule</label>
                         <input type="datetime-local" class="form-control" id="editSchedule" name="schedule" required>
                     </div>
+
                     <div class="mb-3">
-                        <label for="editPoster" class="form-label">Poster</label>
-                        <input type="file" class="form-control" id="editPoster" name="poster">
+                        <label for="editLocation" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="editLocation" name="location" required>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-warning">Update Event</button>
-                </div>
-            </form>
+
+                    <div class="mb-3">
+                        <label for="editOrganizerName" class="form-label">Organizer Name</label>
+                        <input type="text" class="form-control" id="editOrganizerName" name="organizer_name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editOrganizerContact" class="form-label">Organizer Contact</label>
+                        <input type="text" class="form-control" id="editOrganizerContact" name="organizer_contact" required>
+                    </div>
+
+              
+                    <button type="submit" class="btn btn-primary">Update Event</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -383,7 +443,6 @@ $(document).ready(function() {
   <?php include('script.php')?>
   <script>
  document.addEventListener("DOMContentLoaded", function () {
-    // Edit Event Modal
     let editModal = document.getElementById("editModal");
     if (editModal) {
         editModal.addEventListener("show.bs.modal", function (event) {
@@ -392,8 +451,13 @@ $(document).ready(function() {
             document.getElementById("editTitle").value = button.getAttribute("data-title");
             document.getElementById("editDescription").value = button.getAttribute("data-description");
             document.getElementById("editSchedule").value = button.getAttribute("data-schedule");
+            document.getElementById("editLocation").value = button.getAttribute("data-location");
+            document.getElementById("editOrganizerName").value = button.getAttribute("data-organizer_name");
+            document.getElementById("editOrganizerContact").value = button.getAttribute("data-organizer_contact");
         });
     }
+});
+
 
     // Delete Event Modal
     let deleteModal = document.getElementById("deleteModal");
@@ -403,9 +467,21 @@ $(document).ready(function() {
             document.getElementById("deleteEventId").value = button.getAttribute("data-id");
         });
     }
-});
+;
 
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        events: 'fetch_events.php', // Fetch events from database
+    });
+
+    calendar.render();
+
+});
 </script>
   </body>
 </html>
+
 

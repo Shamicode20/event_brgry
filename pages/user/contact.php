@@ -174,10 +174,10 @@
 
           <!--Sidebar ito-->
 
-          <ul class="navbar-nav active flex-fill w-100 mb-2">
+          <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item dropdown">
               <a class="nav-link" href="home.php">
-              <i class="fas fa-chart-line"></i>
+              <i class="fa-solid fa-house"></i>
                 <span class="ml-3 item-text">Home</span>
 
               </a>
@@ -191,8 +191,8 @@
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
               <a class="nav-link" href="event_dashboard.php">
-              <i class="fa-solid fa-wrench"></i>
-                <span class="ml-3 item-text">Event </span>
+              <i class="fa-solid fa-calendar"></i>
+                <span class="ml-3 item-text">Event</span>
               </a>
             </li>
           </ul>
@@ -200,7 +200,7 @@
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
               <a class="nav-link" href="event_registration.php">
-              <i class="fa-solid fa-wrench"></i>
+              <i class="fa-solid fa-registered"></i>
                 <span class="ml-3 item-text">Event Registration</span>
               </a>
             </li>
@@ -211,7 +211,7 @@
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
             <a class="nav-link" href="contact.php">
-            <i class="fa-solid fa-wrench"></i>
+            <i class="fa-solid fa-phone"></i>
                 <span class="ml-3 item-text">Contact Us</span>
               </a>
             </li>
@@ -225,7 +225,7 @@
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
               <a class="nav-link" href="logistic.php">
-              <i class="fa-solid fa-wrench"></i>
+              <i class="fa-solid fa-truck"></i>
                 <span class="ml-3 item-text">Logistic</span>
               </a>
             </li>
@@ -234,26 +234,22 @@
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
             <a class="nav-link" href="emergency.php">
-            <i class="fa-solid fa-wrench"></i>
+            <i class="fa-solid fa-notes-medical"></i>
                 <span class="ml-3 item-text">Emergency Hotline</span>
               </a>
             </li>
           </ul>
-       
-
-       
-          <p class="text-muted-nav nav-heading mt-4 mb-1">
-          <span style="font-size: 10.5px; font-weight: bold; font-family: 'Inter', sans-serif;">SETTINGS</span>
-          </p>
 
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
-              <a class="nav-link" href="settings.php">
-              <i class="fa-solid fa-screwdriver-wrench"></i>
-                <span class="ml-3 item-text">Settings</span>
+            <a class="nav-link" href="processed_requests.php">
+            <i class="fa-solid fa-notes-medical"></i>
+                <span class="ml-3 item-text">Request Status</span>
               </a>
             </li>
           </ul>
+
+        
   
       
         </nav>
@@ -307,41 +303,94 @@
 </head>
 <body>
 
-    <h1><center>Contact Us</center></h1>
+    
 
     
     <style>
-        
+ 
         .container {
-    max-width: 600px;
-    margin: 50px auto;
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    border: 3px solid black;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+            max-width: 500px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            border-top: 5px solid #007BFF;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-.container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #007BFF;
+        }
+
+        .contact-info {
+            font-size: 16px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .social-icons {
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            text-decoration: none;
+            color: white;
+            background: #007BFF;
+            padding: 10px;
+            border-radius: 50%;
+            margin: 5px;
+            display: inline-block;
+            transition: background 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            background: #0056b3;
+        }
+
+        .social-icons i {
+            font-size: 18px;
+        }
 
     </style>
 </head>
 <body>
 
-    <div class="container">
+<div class="container">
+        <h1>Contact Us</h1>
+        <p>If you have any questions or concerns, feel free to reach out to us.</p>
+        
+        <h4>📞 Baranggay Event Contact Number:</h4>
+        <p class="contact-info">0900-9090</p>
 
-        <p>Please feel free to contact us with any questions or concerns you may have
-           </strong></p>
-           <h4>Baranggay Event Contact Number: <strong>09009090</strong></h4>
-           <h4>Email:baranggayevent@gmail.com</h4>
+        <h4>📧 Email:</h4>
+        <p class="contact-info">baranggayevent@gmail.com</p>
 
-
-
-           
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
     </div>
 
     <!-- Include jQuery -->

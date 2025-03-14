@@ -12,9 +12,9 @@ require '../../database/connection.php';
 $events = [];
 
 try {
-    // Fetch events the user is participating in, including the `poster` field
+    // Fetch events the user is participating in, including the `poster_base64` field
     $stmt = $conn->prepare("
-        SELECT events.id, events.title, events.description, events.schedule, events.poster 
+        SELECT events.id, events.title, events.description, events.schedule, events.poster_base64 
         FROM events 
         JOIN event_participants ON events.id = event_participants.event_id 
         WHERE event_participants.user_id = :id 
@@ -206,10 +206,10 @@ try {
 
           <!--Sidebar ito-->
 
-          <ul class="navbar-nav active flex-fill w-100 mb-2">
+          <ul class="navbar-nav  flex-fill w-100 mb-2">
             <li class="nav-item dropdown">
               <a class="nav-link" href="home.php">
-              <i class="fas fa-chart-line"></i>
+              <i class="fas fa-house"></i>
                 <span class="ml-3 item-text">Home</span>
 
               </a>
@@ -223,7 +223,7 @@ try {
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
               <a class="nav-link" href="event_dashboard.php">
-              <i class="fa-solid fa-wrench"></i>
+              <i class="fa-solid fa-calendar"></i>
                 <span class="ml-3 item-text">Event </span>
               </a>
             </li>
@@ -232,7 +232,7 @@ try {
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
               <a class="nav-link" href="event_registration.php">
-              <i class="fa-solid fa-wrench"></i>
+              <i class="fa-solid fa-registered"></i>
                 <span class="ml-3 item-text">Event Registration</span>
               </a>
             </li>
@@ -243,7 +243,7 @@ try {
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
             <a class="nav-link" href="contact.php">
-            <i class="fa-solid fa-wrench"></i>
+            <i class="fa-solid fa-phone"></i>
                 <span class="ml-3 item-text">Contact Us</span>
               </a>
             </li>
@@ -257,7 +257,7 @@ try {
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
               <a class="nav-link" href="logistic.php">
-              <i class="fa-solid fa-wrench"></i>
+              <i class="fa-solid fa-truck"></i>
                 <span class="ml-3 item-text">Logistic</span>
               </a>
             </li>
@@ -266,26 +266,23 @@ try {
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
             <a class="nav-link" href="emergency.php">
-            <i class="fa-solid fa-wrench"></i>
+            <i class="fa-solid fa-notes-medical"></i>
                 <span class="ml-3 item-text">Emergency Hotline</span>
+              </a>
+            </li>
+          </ul>
+          <ul class="navbar-nav flex-fill w-100 mb-2">
+            <li class="nav-item w-100">
+            <a class="nav-link" href="processed_requests.php">
+            <i class="fa-solid fa-notes-medical"></i>
+                <span class="ml-3 item-text">Request Status</span>
               </a>
             </li>
           </ul>
        
       
        
-          <p class="text-muted-nav nav-heading mt-4 mb-1">
-          <span style="font-size: 10.5px; font-weight: bold; font-family: 'Inter', sans-serif;">SETTINGS</span>
-          </p>
-
-          <ul class="navbar-nav flex-fill w-100 mb-2">
-            <li class="nav-item w-100">
-              <a class="nav-link" href="settings.php">
-              <i class="fa-solid fa-screwdriver-wrench"></i>
-                <span class="ml-3 item-text">Settings</span>
-              </a>
-            </li>
-          </ul>
+          
   
       
         </nav>
@@ -310,7 +307,9 @@ try {
    
       <div class="col-12 mb-4">
         <div class="alert alert-success alert-dismissible fade show" role="alert" id="notification">
-          <img class="fade show" src="../../assets/images/unified-lgu-logo.png" width="35" height="35">
+        <img src="data:image/jpeg;base64,<?php echo htmlspecialchars($event['poster_base64']); ?>" 
+                         alt="<?php echo htmlspecialchars($event['title']); ?>" 
+                         class="card-img-top">
           <strong style="font-size:12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></strong> 
           <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="removeNotification()">
             <span aria-hidden="true">&times;</span>
@@ -343,13 +342,11 @@ try {
                 <?php foreach ($events as $event): ?>
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
                         <div class="card h-100 border-0 shadow-sm dark-card">
-                            <!-- Event poster -->
-                            <img
-                                src="../../assets/img/<?php echo htmlspecialchars($event['poster'] ?? 'default.jpg'); ?>"
-                                alt="<?php echo htmlspecialchars($event['title']); ?>"
-                                class="card-img-top rounded-top"
-                                style="height: 250px; object-fit: contain; background-color: #f8f9fa;">
-
+                        <img
+    src="data:image/jpeg;base64,<?php echo htmlspecialchars($event['poster_base64']); ?>"
+    alt="<?php echo htmlspecialchars($event['title']); ?>"
+    class="card-img-top rounded-top"
+    style="height: 250px; object-fit: contain; background-color: #f8f9fa;">
                             <!-- Event details -->
                             <div class="card-body text-center dark-card-body">
                                 <h5 class="card-title mb-2 dark-text">
