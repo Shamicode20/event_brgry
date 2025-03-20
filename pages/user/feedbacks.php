@@ -1,18 +1,24 @@
 <?php
-require('../../database/connection.php');
+session_start();
+require '../../database/connection.php';
 
+// Fetch events with feedback data
+$events = [];
 try {
-    $stmt = $conn->prepare("SELECT id, contact_number, email FROM contact_info LIMIT 1");
+    $stmt = $conn->prepare("SELECT e.id, e.title, e.schedule, e.location, 
+                                   COALESCE(SUM(CASE WHEN f.feedback = 'like' THEN 1 ELSE 0 END), 0) AS likes, 
+                                   COALESCE(SUM(CASE WHEN f.feedback = 'dislike' THEN 1 ELSE 0 END), 0) AS dislikes
+                            FROM events e
+                            LEFT JOIN event_feedback f ON e.id = f.event_id
+                            GROUP BY e.id, e.title, e.schedule, e.location
+                            ORDER BY e.schedule DESC");
     $stmt->execute();
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    $contact_id = $row['id'] ?? '';
-    $contact_number = $row['contact_number'] ?? 'Not Available';
-    $email = $row['email'] ?? 'Not Available';
-} catch (PDOException $e) {
-    die("Query failed: " . $e->getMessage());
+    $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    $_SESSION['error'] = "Error fetching events: " . $e->getMessage();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +28,7 @@ try {
     <link rel="icon" href="../assets/images/unified-lgu-logo.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/fontawesome.min.css">
     <link rel ="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <title>Contact Us</title>
+    <title>Feedbacks</title>
 
     <!-- Simple bar CSS (for scvrollbar)-->
     <link rel="stylesheet" href="../../css/simplebar.css">
@@ -125,6 +131,7 @@ try {
 </li>
 
           
+  
 
   </div>
 </span>
@@ -155,7 +162,7 @@ try {
 
             <div class="brand-title">
             <br>
-              <span>Baranggay Event Management</span>
+              <span>Baranggay Event Management<</span>
             </div>
                        
             </a>
@@ -167,7 +174,7 @@ try {
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item dropdown">
               <a class="nav-link" href="home.php">
-              <i class="fa-solid fa-house"></i>
+              <i class="fas fa-home"></i>
                 <span class="ml-3 item-text">Home</span>
 
               </a>
@@ -229,7 +236,6 @@ try {
               </a>
             </li>
           </ul>
-
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
             <a class="nav-link" href="processed_requests.php">
@@ -247,8 +253,10 @@ try {
               </a>
             </li>
           </ul>
+       
 
-        
+       
+          
   
       
         </nav>
@@ -293,103 +301,46 @@ try {
           </div>
         </div>
 
-     <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us</title>
-   
 
-</head>
-<body>
+<div id="page-content-wrapper">
+    <div class="dashboard-header text-center">
+    <h2 class="mt-4">Event Feedback & Ratings</h2>
+        
+        <?php if (!empty($events)) : ?>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Event Title</th>
+                        <th>Schedule</th>
+                        <th>Location</th>
+                        <th>Likes</th>
+                        <th>Dislikes</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($events as $event) : ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($event['title']); ?></td>
+                            <td><?php echo htmlspecialchars(date('F d, Y h:i A', strtotime($event['schedule']))); ?></td>
+                            <td><?php echo htmlspecialchars($event['location']); ?></td>
+                            <td id="likes-<?php echo $event['id']; ?>"><?php echo $event['likes']; ?></td>
+                            <td id="dislikes-<?php echo $event['id']; ?>"><?php echo $event['dislikes']; ?></td>
+                            <td>
+                                <button class="like-btn" data-event="<?php echo $event['id']; ?>">Like</button>
+                                <button class="dislike-btn" data-event="<?php echo $event['id']; ?>">Dislike</button>
+                                <button class="view-comments" data-event="<?php echo $event['id']; ?>">Comments</button>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php else : ?>
+            <p>No events available.</p>
+        <?php endif; ?>
+    </div>
 
-    
-
-    
-    <style>
- 
-        .container {
-            max-width: 500px;
-            background: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-            border-top: 5px solid #007BFF;
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        h1 {
-            font-size: 28px;
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        p {
-            font-size: 16px;
-            color: #555;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
-        h4 {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: #007BFF;
-        }
-
-        .contact-info {
-            font-size: 16px;
-            color: #333;
-            font-weight: bold;
-        }
-
-        .social-icons {
-            margin-top: 20px;
-        }
-
-        .social-icons a {
-            text-decoration: none;
-            color: white;
-            background: #007BFF;
-            padding: 10px;
-            border-radius: 50%;
-            margin: 5px;
-            display: inline-block;
-            transition: background 0.3s ease;
-        }
-
-        .social-icons a:hover {
-            background: #0056b3;
-        }
-
-        .social-icons i {
-            font-size: 18px;
-        }
-
-    </style>
-</head>
-<body>
-
-
-<div class="container mt-5 text-center">
-    <h1>Contact Us</h1>
-    <p>If you have any questions or concerns, feel free to reach out to us.</p>
-    
-    <h4>📞 Barangay Event Contact Number:</h4>
-    <p class="contact-info" id="contact-number"><?php echo $contact_number; ?></p>
-
-    <h4>📧 Email:</h4>
-    <p class="contact-info" id="contact-email"><?php echo $email; ?></p>
-
-   
-</div>
-
-    <!-- Include jQuery -->
+<!-- Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="../../js/jquery.min.js"></script>
   <script src="../../js/popper.min.js"></script>
@@ -420,6 +371,23 @@ try {
   <script src="../../js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
   <script src='../../js/jquery.dataTables.min.js'></script>
     <script src='../../js/dataTables.bootstrap4.min.js'></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.like-btn, .dislike-btn').click(function () {
+                let eventId = $(this).data('event');
+                let feedback = $(this).hasClass('like-btn') ? 'like' : 'dislike';
+                
+                $.post('submit_feedback.php', { event_id: eventId, feedback: feedback }, function (response) {
+                    let data = JSON.parse(response);
+                    if (data.success) {
+                        $('#likes-' + eventId).text(data.likes);
+                        $('#dislikes-' + eventId).text(data.dislikes);
+                    }
+                });
+            });
+        });
+    </script>
     
   </body>
 </html>

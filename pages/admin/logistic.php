@@ -26,7 +26,7 @@ try {
     <link rel="icon" href="../assets/images/unified-lgu-logo.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/fontawesome.min.css">
     <link rel ="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <title>System UI Template</title>
+    <title>Logistic</title>
 
     <!-- Simple bar CSS (for scvrollbar)-->
     <link rel="stylesheet" href="../../css/simplebar.css">
@@ -144,9 +144,10 @@ try {
     padding: 10px 20px;
 }
 
-.add-item-btn {
-    background-color: #007bff;
-    color: white;
+.add-item-btn,
+.btn-primary {
+    background-color: #007bff !important; /* Parehong asul na kulay */
+    color: white !important;
     border: none;
     padding: 10px 20px;
     font-size: 16px;
@@ -155,9 +156,28 @@ try {
     transition: background 0.3s;
 }
 
-.add-item-btn:hover {
-    background-color: #0056b3;
+.add-item-btn:hover,
+.btn-primary:hover {
+    background-color: #0056b3 !important; /* Darker blue para sa hover effect */
 }
+.add-item-btn,
+.btn-secondary {
+    background-color: #007bff !important; /* Parehong asul na kulay */
+    color: white !important;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.add-item-btn:hover,
+.btn-secondary:hover {
+    background-color: #0056b3 !important; /* Darker blue para sa hover effect */
+}
+
+
 
 </style>
   
@@ -172,10 +192,14 @@ try {
         <?php include('sidebar.php'); ?>
         <main role="main" class="main-content">
             <div class="container">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2>Product Inventory</h2>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">+ Add Product</button>
-                </div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Event Inventory</h2>
+    <div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">+ Add Equipment</button>
+        <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editInventoryModal">Edit Inventory</button>
+    </div>
+</div>
+
                 <div class="row">
     <?php if (!empty($products)) : ?>
         <?php foreach ($products as $product) : ?>
@@ -203,15 +227,15 @@ try {
                     <div class="modal-content">
                         <form action="logistics.php" method="POST" enctype="multipart/form-data">
                             <div class="modal-header">
-                                <h5 class="modal-title">Add Product</h5>
+                                <h5 class="modal-title">Add Equipment</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal">X</button>
                             </div>
                             <div class="modal-body">
-                                <label>Product Name</label>
+                                <label>Equipment</label>
                                 <input type="text" name="name" class="form-control" required>
                                 <label>Quantity</label>
                                 <input type="number" name="quantity" class="form-control" required>
-                                <label>Product Image</label>
+                                <label>Equipment Image</label>
                                 <input type="file" name="image" class="form-control">
                             </div>
                             <div class="modal-footer">
@@ -221,7 +245,42 @@ try {
                     </div>
                 </div>
             </div>
-
+  <!-- Edit Inventory Modal -->
+  <div class="modal fade" id="editInventoryModal">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <form action="process_edit_inventory.php" method="POST">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Inventory</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($products as $product) : ?>
+                                            <tr>
+                                                <td><input type="text" name="names[]" value="<?php echo htmlspecialchars($product['name']); ?>" class="form-control"></td>
+                                                <td><input type="number" name="quantities[]" value="<?php echo htmlspecialchars($product['quantity']); ?>" class="form-control"></td>
+                                                <td><input type="hidden" name="ids[]" value="<?php echo $product['id']; ?>"></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         </main>
     </div>
@@ -245,6 +304,13 @@ try {
         deleteModal.addEventListener("show.bs.modal", function (event) {
             let button = event.relatedTarget;
             document.getElementById("deleteProductId").value = button.getAttribute("data-id");
+        });
+    });
+    $(document).ready(function() {
+        $('#editInventoryModal').on('show.bs.modal', function(event) {
+            let button = $(event.relatedTarget);
+            let modal = $(this);
+            modal.find('form')[0].reset();
         });
     });
     </script>

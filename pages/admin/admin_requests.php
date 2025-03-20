@@ -24,7 +24,7 @@ try {
     <link rel="icon" href="../assets/images/unified-lgu-logo.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/fontawesome.min.css">
     <link rel ="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <title>System UI Template</title>
+    <title>Submitted Requests</title>
 
     <!-- Simple bar CSS (for scvrollbar)-->
     <link rel="stylesheet" href="../../css/simplebar.css">
@@ -176,7 +176,7 @@ try {
                     <th>ID</th>
                     <th>Full Name</th>
                     <th>Contact</th>
-                    <th>Items</th>
+                    <th>Equipment</th>
                     <th>Delivery Date</th>
                     <th>Location</th>
                     <th>Purpose</th>

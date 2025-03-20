@@ -103,8 +103,17 @@
               </a>
             </li>
           </ul>
-      
 
+          <ul class="navbar-nav flex-fill w-100 mb-2">
+            <li class="nav-item w-100">
+              <a class="nav-link" href="reports.php">
+              <i class="fa-regular fa-newspaper"></i>
+                <span class="ml-3 item-text">Reports</span>
+              </a>
+            </li>
+          </ul>
+      
+          
   
       
         </nav>

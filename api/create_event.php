@@ -9,6 +9,7 @@ require '../database/connection.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = trim($_POST['title']);
+    $event_type = trim($_POST['event_type']);
     $description = trim($_POST['description']);
     $schedule = trim($_POST['schedule']);
     $location = trim($_POST['location']);
@@ -30,10 +31,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     try {
-        $stmt = $conn->prepare("INSERT INTO events (title, poster_base64, description, schedule, location, organizer_name, organizer_contact) 
-                                VALUES (:title, :poster_base64, :description, :schedule, :location, :organizer_name, :organizer_contact)");
+        // Start transaction
+        $conn->beginTransaction();
+
+        // Insert event into database (PDO)
+        $stmt = $conn->prepare("INSERT INTO events (title, event_type, poster_base64, description, schedule, location, organizer_name, organizer_contact) 
+                                VALUES (:title, :event_type, :poster_base64, :description, :schedule, :location, :organizer_name, :organizer_contact)");
         $stmt->execute([
             ':title' => $title,
+            ':event_type' => $event_type,
             ':poster_base64' => $poster_base64 ?: null,  // Ensure null if no image
             ':description' => $description,
             ':schedule' => $schedule,
@@ -42,10 +48,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ':organizer_contact' => $organizer_contact
         ]);
 
+        // Check and update inventory (Using PDO)
+        if (isset($_POST['items']) && isset($_POST['quantity'])) {
+            $items = $_POST['items'];
+            $quantities = $_POST['quantity'];
+
+            foreach ($items as $itemId) {
+                $requestedQty = intval($quantities[$itemId]);
+
+                // Get current quantity
+                $query = $conn->prepare("SELECT quantity FROM inventory WHERE id = :id");
+                $query->execute([':id' => $itemId]);
+                $currentQty = $query->fetchColumn();
+
+                // Check stock availability
+                if ($currentQty === false || $currentQty < $requestedQty) {
+                    throw new Exception("Not enough stock for item ID " . $itemId);
+                }
+
+                // Update inventory
+                $newQty = $currentQty - $requestedQty;
+                $update = $conn->prepare("UPDATE inventory SET quantity = :newQty WHERE id = :id");
+                $update->execute([':newQty' => $newQty, ':id' => $itemId]);
+            }
+        }
+
+        // Commit transaction
+        $conn->commit();
         $_SESSION['success'] = "Event created successfully!";
     } catch (Exception $e) {
-        $_SESSION['error'] = "Error creating event: " . $e->getMessage();
+        $conn->rollBack();
+        $_SESSION['error'] = "Error: " . $e->getMessage();
     }
+
     header("Location: ../pages/admin/events.php");
     exit;
 }

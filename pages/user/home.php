@@ -45,7 +45,7 @@ try {
     <link rel="icon" href="../assets/images/unified-lgu-logo.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/fontawesome.min.css">
     <link rel ="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <title>System UI Template</title>
+    <title>Home</title>
 
     <!-- Simple bar CSS (for scvrollbar)-->
     <link rel="stylesheet" href="../../css/simplebar.css">
@@ -135,44 +135,19 @@ try {
         <button type="button" class="navbar-toggler text-muted mt-2 p-0 mr-3 collapseSidebar">
           <i class="fe fe-menu navbar-toggler-icon"></i>
         </button>
-        <form class="form-inline mr-auto searchform text-muted">
-          <input class="form-control  bg-transparent border-0 pl-4 " type="search" placeholder="Type something....." aria-label="Search">
-        </form>
+        
 
         <ul class="nav">
     
           
-          <li class="nav-item">
-            <section class="nav-link text-muted my-2 circle-icon" href="#" data-toggle="modal" data-target=".modal-shortcut">
-              <span class="fe fe-message-circle fe-16"></span>
-            </section>
-          </li>
-
-
-          <li class="nav-item nav-notif">
-  <section class="nav-link text-muted my-2 circle-icon" href="#" data-toggle="modal" data-target=".modal-notif">
-    <span class="fe fe-bell fe-16"></span>
+          
    
-      <span id="notification-count" style="
-        position: absolute; 
-        top: 12px; right: 5px; 
-        font-size:13px; color: white;
-        background-color: red;
-        width:8px;
-        height: 8px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 50px;
-      ">
+      
       
   </section>
 </li>
 
-          <li class="nav-item dropdown">
-            <span class="nav-link text-muted pr-0 avatar-icon" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="avatar avatar-sm mt-2">
-  <div class="avatar-img rounded-circle avatar-initials-min text-center position-relative">
+          
   
 
   </div>
@@ -230,7 +205,7 @@ try {
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
               <a class="nav-link" href="event_dashboard.php">
-              <i class="fa-solid fa-wrench"></i>
+              <i class="fa-solid fa-calendar"></i>
                 <span class="ml-3 item-text">Event</span>
               </a>
             </li>
@@ -238,9 +213,9 @@ try {
 
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
-              <a class="nav-link" href="event_dashboard.php">
-              <i class="fa-solid fa-house"></i>
-                <span class="ml-3 item-text">Event Dashboard</span>
+              <a class="nav-link" href="event_registration.php">
+              <i class="fa-solid fa-registered"></i>
+                <span class="ml-3 item-text">Event Registration</span>
               </a>
             </li>
           </ul>
@@ -250,7 +225,7 @@ try {
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
             <a class="nav-link" href="contact.php">
-            <i class="fa-solid fa-wrench"></i>
+            <i class="fa-solid fa-phone"></i>
                 <span class="ml-3 item-text">Contact Us</span>
               </a>
             </li>
@@ -264,7 +239,7 @@ try {
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
               <a class="nav-link" href="logistic.php">
-              <i class="fa-solid fa-wrench"></i>
+              <i class="fa-solid fa-truck"></i>
                 <span class="ml-3 item-text">Logistic</span>
               </a>
             </li>
@@ -273,7 +248,7 @@ try {
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
             <a class="nav-link" href="emergency.php">
-            <i class="fa-solid fa-wrench"></i>
+            <i class="fa-solid fa-notes-medical"></i>
                 <span class="ml-3 item-text">Emergency Hotline</span>
               </a>
             </li>
@@ -281,13 +256,20 @@ try {
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
             <a class="nav-link" href="processed_requests.php">
-            <i class="fa-solid fa-notes-medical"></i>
+            <i class="fa-solid fa-envelope-open-text"></i>
                 <span class="ml-3 item-text">Request Status</span>
               </a>
             </li>
           </ul>
        
-
+          <ul class="navbar-nav flex-fill w-100 mb-2">
+            <li class="nav-item w-100">
+            <a class="nav-link" href="feedbacks.php">
+            <i class="fa-solid fa-comment"></i>
+                <span class="ml-3 item-text">Feedbacks & Ratings</span>
+              </a>
+            </li>
+          </ul>
        
           
   

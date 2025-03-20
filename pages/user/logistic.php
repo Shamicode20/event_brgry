@@ -21,7 +21,7 @@ try {
   <link rel="icon" href="../assets/images/unified-lgu-logo.png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/fontawesome.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-  <title>System UI Template</title>
+  <title>Logistic</title>
   <!-- Simple bar CSS (for scrollbar) -->
   <link rel="stylesheet" href="../../css/simplebar.css">
   <!-- Fonts CSS -->
@@ -134,11 +134,12 @@ try {
       <!-- Header and Request Button -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h2>Available Items</h2>
+          <h2>Available Equipments</h2>
           <p class="text-muted">Below are the available items and their stock.</p>
         </div>
+        
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#requestModal">
-          Request Items
+          Request Equipments
         </button>
       </div>
       
@@ -160,7 +161,7 @@ try {
               </div>
             <?php endforeach; ?>
           <?php else : ?>
-            <p class="text-center">No items available.</p>
+            <p class="text-center">No Equipments available.</p>
           <?php endif; ?>
         </div>
       </div>
@@ -170,13 +171,13 @@ try {
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="requestModalLabel">Request Items</h5>
+                <h5 class="modal-title fw-bold" id="requestModalLabel">Request Equipments</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form action="process_request.php" method="POST">
                 <div class="modal-body">
                     <div class="m-4">
-                        <p class="fw-semibold text-center">Fill in your details and select items:</p>
+                        <p class="fw-semibold text-center">Fill in your details and select Equipments:</p>
                         <!-- Personal Information -->
                         <div class="mb-2">
                             <label class="form-label">Full Name</label>
@@ -188,7 +189,7 @@ try {
                         </div>
 
                         <!-- Item Selection -->
-                        <label class="form-label mt-3">Select Items</label>
+                        <label class="form-label mt-3">Select Equipments</label>
                         <div class="border rounded p-3 bg-light">
                         <?php foreach ($items as $item) : ?>
         <div class="d-flex align-items-center justify-content-between p-2 border-bottom">
@@ -216,8 +217,17 @@ try {
 
                         <!-- Date and Time of Delivery -->
                         <div class="mt-3">
-                            <label class="form-label">Date & Time of Delivery</label>
-                            <input type="datetime-local" name="delivery_datetime" class="form-control" required>
+                       
+
+                            <label for="editSchedule" class="form-label">Schedule</label>
+                        <input type="datetime-local" class="form-control" id="editSchedule" name="delivery_datetime" required>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); // Adjust for timezone
+        document.getElementById("editSchedule").setAttribute("min", now.toISOString().slice(0, 16));
+    });
+</script>
                         </div>
 
                         <!-- Location Selection -->

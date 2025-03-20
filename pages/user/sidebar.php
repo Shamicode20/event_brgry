@@ -91,11 +91,20 @@
           <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
             <a class="nav-link" href="processed_requests.php">
-            <i class="fa-solid fa-notes-medical"></i>
+            <i class="fa-solid fa-envelope-open-text"></i>
                 <span class="ml-3 item-text">Request Status</span>
               </a>
             </li>
           </ul>
+          <ul class="navbar-nav flex-fill w-100 mb-2">
+            <li class="nav-item w-100">
+            <a class="nav-link" href="feedbacks.php">
+            <i class="fa-solid fa-comment"></i>
+                <span class="ml-3 item-text">Feedbacks & Ratings</span>
+              </a>
+            </li>
+          </ul>
+
 
          
   

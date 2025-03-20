@@ -1,3 +1,21 @@
+<?php
+require('../../database/connection.php');
+
+try {
+    $stmt = $conn->prepare("SELECT id, contact_number, email FROM contact_info LIMIT 1");
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $contact_id = $row['id'] ?? '';
+    $contact_number = $row['contact_number'] ?? 'Not Available';
+    $email = $row['email'] ?? 'Not Available';
+} catch (PDOException $e) {
+    die("Query failed: " . $e->getMessage());
+}
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,7 +24,7 @@
     <link rel="icon" href="../assets/images/unified-lgu-logo.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/fontawesome.min.css">
     <link rel ="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <title>System UI Template</title>
+    <title>Contact Us</title>
 
     <!-- Simple bar CSS (for scvrollbar)-->
     <link rel="stylesheet" href="../../css/simplebar.css">
@@ -101,37 +119,12 @@
         <ul class="nav">
     
           
-          <li class="nav-item">
-            <section class="nav-link text-muted my-2 circle-icon" href="#" data-toggle="modal" data-target=".modal-shortcut">
-              <span class="fe fe-message-circle fe-16"></span>
-            </section>
-          </li>
-
-
-          <li class="nav-item nav-notif">
-  <section class="nav-link text-muted my-2 circle-icon" href="#" data-toggle="modal" data-target=".modal-notif">
-    <span class="fe fe-bell fe-16"></span>
-   
-      <span id="notification-count" style="
-        position: absolute; 
-        top: 12px; right: 5px; 
-        font-size:13px; color: white;
-        background-color: red;
-        width:8px;
-        height: 8px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 50px;
-      ">
+          
       
   </section>
 </li>
 
-          <li class="nav-item dropdown">
-            <span class="nav-link text-muted pr-0 avatar-icon" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="avatar avatar-sm mt-2">
-  <div class="avatar-img rounded-circle avatar-initials-min text-center position-relative">
+          
   
 
   </div>
@@ -264,27 +257,95 @@
  .social-icons i {
      font-size: 18px;
  }
-
+ .btn-secondary {
+    background-color: red!important; /* Parehong asul na kulay */
+    color: white !important;
+    border: none;
+    padding: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
 </style>
 </head>
 <body>
 
-<div class="container">
-        <h1>Contact Us</h1>
-        <p>If you have any questions or concerns, feel free to reach out to us.</p>
-        
-        <h4>📞 Baranggay Event Contact Number:</h4>
-        <p class="contact-info">0900-9090</p>
+<div class="container mt-5 text-center">
+    <h1>Contact Us</h1>
+    <p>If you have any questions or concerns, feel free to reach out to us.</p>
+    
+    <h4>📞 Barangay Event Contact Number:</h4>
+    <p class="contact-info" id="contact-number"><?php echo $contact_number; ?></p>
 
-        <h4>📧 Email:</h4>
-        <p class="contact-info">baranggayevent@gmail.com</p>
+    <h4>📧 Email:</h4>
+    <p class="contact-info" id="contact-email"><?php echo $email; ?></p>
 
-        <div class="social-icons">
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
+    <button class="btn btn-primary" onclick="openEditModal()">Edit</button>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Contact Information</h5>
+                
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="contact-id" value="<?php echo $contact_id; ?>">
+                <label for="edit-contact-number">Contact Number:</label>
+                <input type="text" id="edit-contact-number" class="form-control" value="<?php echo $contact_number; ?>">
+                <label for="edit-contact-email" class="mt-3">Email:</label>
+                <input type="email" id="edit-contact-email" class="form-control" value="<?php echo $email; ?>">
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                <button type="button" class="btn btn-primary" onclick="saveChanges()">Save Changes</button>
+            </div>
         </div>
     </div>
+</div>
+
+<script>
+  
+  function openEditModal() {
+    $('#editModal').modal('show');
+}
+
+function saveChanges() {
+    var contactID = $("#contact-id").val();
+    var contactNumber = $("#edit-contact-number").val();
+    var email = $("#edit-contact-email").val();
+
+    $.ajax({
+        url: "update_contact.php",
+        type: "POST",
+        data: {
+            id: contactID,
+            contact_number: contactNumber,
+            email: email
+        },
+        success: function(response) {
+            var result = JSON.parse(response);
+            if (result.status === "success") {
+                $("#contact-number").text(contactNumber);
+                $("#contact-email").text(email);
+                $('#editModal').modal('hide');
+                alert("Contact updated successfully!");
+            } else {
+                alert("Error: " + result.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            alert("AJAX request failed: " + xhr.responseText);
+        }
+    });
+}
+
+
+</script>
 
 <!-- Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

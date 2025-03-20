@@ -21,7 +21,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" href="../assets/images/unified-lgu-logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <title>Request Status</title>
+    <title>System UI Template</title>
 
     <!-- Styles -->
     <link rel="stylesheet" href="../../css/simplebar.css">
